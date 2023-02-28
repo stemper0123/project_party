@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:loop_page_view/loop_page_view.dart';
-
 import '../../components/components.dart';
 import '../../models/models.dart';
 
@@ -16,7 +15,6 @@ class _ListPageState extends State<ListPage> {
 
   @override
   Widget build(BuildContext context) {
-    print("Testing");
     return GlobalComponents.getFilter(
         maxHeight: MediaQuery.of(context).size.height - 80,
         minHeight: 150,

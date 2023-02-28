@@ -10,7 +10,7 @@ String partyToJson(List<Party> data) =>
 
 List<Party> testParties = [
   Party(
-    partyId: '0eb9d01b-f02e-47f8-89c6-c12f65aa3a55',
+    partyId: '0eb9d01b-f02e-47f8-91c6-c12f65aa3a55',
     name: 'Titel21',
     time: DateTime(2023, 02, 22, 06, 30, 00),
     description: 'Beschreibung21',

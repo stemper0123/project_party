@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+
 import 'package:pie_menu/pie_menu.dart';
 import 'package:project_party/controller/main_controller.dart';
-import 'package:project_party/controller/pageview_controller.dart';
-import 'package:project_party/models/models.dart';
-import 'package:project_party/screens/main_pages/add_page.dart';
-import 'package:project_party/screens/main_pages/favorites_page.dart';
-import 'package:project_party/screens/main_pages/list_page.dart';
-import 'package:project_party/screens/main_pages/map_page.dart';
 import 'package:project_party/styles/static_colors.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import '../components/components.dart';
@@ -19,7 +14,6 @@ class MainScreen extends GetView<MainController> {
 
   @override
   Widget build(BuildContext context) {
-    print('new');
     return PieCanvas(
       child: Scaffold(
         backgroundColor: StaticColors.secondary,
@@ -42,39 +36,39 @@ class MainScreen extends GetView<MainController> {
   List<SalomonBottomBarItem> _navigationBarItems() {
     return [
       SalomonBottomBarItem(
-        icon: Icon(Icons.celebration_outlined),
-        activeIcon: Icon(Icons.celebration),
-        title: Text("Partys"),
+        icon: const Icon(Icons.celebration_outlined),
+        activeIcon: const Icon(Icons.celebration),
+        title: const Text("Partys"),
         selectedColor: StaticColors.primary,
       ),
 
       /// Likes
       SalomonBottomBarItem(
-        icon: Icon(Icons.favorite_border),
-        activeIcon: Icon(Icons.favorite),
-        title: Text("Favorites"),
+        icon: const Icon(Icons.favorite_border),
+        activeIcon: const Icon(Icons.favorite),
+        title: const Text("Favorites"),
         selectedColor: Colors.pink,
       ),
 
       /// Search
       SalomonBottomBarItem(
-        icon: Icon(Icons.map_outlined),
-        activeIcon: Icon(Icons.map),
-        title: Text("Karte"),
+        icon: const Icon(Icons.map_outlined),
+        activeIcon: const Icon(Icons.map),
+        title: const Text("Karte"),
         selectedColor: StaticColors.primary,
       ),
       SalomonBottomBarItem(
-        icon: Icon(Icons.add),
-        activeIcon: Icon(Icons.add_circle_rounded),
-        title: Text("Hinzufügen"),
+        icon: const Icon(Icons.add),
+        activeIcon: const Icon(Icons.add_circle_rounded),
+        title: const Text("Hinzufügen"),
         selectedColor: StaticColors.primary,
       ),
 
       /// Profile
       SalomonBottomBarItem(
-        icon: Icon(Icons.person_outlined),
-        activeIcon: Icon(Icons.person),
-        title: Text("Profil"),
+        icon: const Icon(Icons.person_outlined),
+        activeIcon: const Icon(Icons.person),
+        title: const Text("Profil"),
         selectedColor: StaticColors.primary,
       ),
     ];

@@ -7,7 +7,10 @@ import 'package:slide_switcher/slide_switcher.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import '../models/models.dart';
 import '../screens/detail_screen.dart';
+import 'package:get/get.dart';
+
 import '../styles/static_colors.dart';
+import 'package:animations/animations.dart';
 
 class GlobalComponents {
   static Widget getFilter(
@@ -22,8 +25,13 @@ class GlobalComponents {
   }
 
   static Widget getMapPartyTile(
-      {required double maxHeight, required double minHeight, Widget? background, Widget? partyTile}) {
+      {required double maxHeight,
+      required double minHeight,
+      Widget? background,
+      Widget? partyTile,
+      PanelController? controller}) {
     return SlidingUpPanel(
+        controller: controller,
         renderPanelSheet: false,
         maxHeight: maxHeight,
         minHeight: minHeight,
@@ -35,45 +43,64 @@ class GlobalComponents {
     return ListView.builder(
       itemCount: parties.length,
       itemBuilder: (context, index) {
-        final party = parties[index];
+        var party = parties[index];
         return getPartyTile(context, party);
       },
     );
   }
 
-  static Widget getPartyTile(BuildContext context, Party party) {
-    return PieMenu(
-      onTap: () async => Navigator.push(context, MaterialPageRoute(builder: (context) => PartyDetailScreen(party: party))),
-      actions: [
-        PieAction(
-          buttonTheme: PieButtonTheme(backgroundColor: Colors.pink, iconColor: StaticColors.secondary),
-          tooltip: 'like',
+  static Widget getMinButton(String text,
+      {double? fontSize,
+      bool? isRounded,
+      Color color = Colors.white,
+      Color textColor = Colors.black,
+      double? padding,
+      void Function()? onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(isRounded ?? false ? 50 : 5)),
+        child: Padding(
+          padding: EdgeInsets.all(padding ?? 0),
+          child: Center(
+            child: Text(text,
+                style: TextStyle(
+                  fontSize: fontSize,
+                  color: textColor,
+                )),
+          ),
+        ),
+      ),
+    );
+  }
 
-          onSelect: () => print('liked'),
-          child: const Icon(Icons.favorite), // Not necessarily an icon widget
-        ),
-        PieAction(
-          buttonTheme: PieButtonTheme(backgroundColor: StaticColors.primary, iconColor: StaticColors.secondary),
-          tooltip: 'like',
-          onSelect: () => print('liked'),
-          child: const Icon(Icons.share), // Not necessarily an icon widget
-        ),
-      ],
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(10, 4, 10, 4),
-        child: Container(
-          height: 80,
-          decoration: BoxDecoration(
-              color: StaticColors.secondary,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.2),
-                  spreadRadius: 4,
-                  blurRadius: 10,
-                  offset: Offset(0, 0), // changes position of shadow
-                ),
-              ],
-              borderRadius: BorderRadius.circular(15)),
+  static Widget getPartyTile(BuildContext context, Party party) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(10, 4, 10, 4),
+      child: Container(
+        height: 80,
+        decoration: BoxDecoration(
+            color: StaticColors.secondary,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.2),
+                spreadRadius: 4,
+                blurRadius: 10,
+                offset: Offset(0, 0), // changes position of shadow
+              ),
+            ],
+            borderRadius: BorderRadius.circular(15)),
+        child: InkWell(
+          onTap: () {
+
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+
+                      builder: (context) => PartyDetailScreen(party: party)));
+            },
           child: Row(
             children: [
               Container(
@@ -84,7 +111,8 @@ class GlobalComponents {
                       topLeft: Radius.circular(15),
                       bottomLeft: Radius.circular(15)),
                   image: DecorationImage(
-                      image: NetworkImage(party.flyerSource), fit: BoxFit.cover),
+                      image: NetworkImage(party.flyerSource),
+                      fit: BoxFit.cover),
                 ),
               ),
               Expanded(
@@ -98,7 +126,7 @@ class GlobalComponents {
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Text(_getSimpleDate(party.time)),
-                  Text(party.adress),
+                  Text(party.locationName),
                 ],
               ))
             ],
@@ -117,16 +145,18 @@ class GlobalComponents {
       bool? isRounded,
       Color color = Colors.white,
       Color textColor = Colors.black,
+      bool isInfinityWidth = false,
+      double padding = 10,
       void Function()? onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: double.infinity,
+        width: isInfinityWidth ? double.infinity : null,
         decoration: BoxDecoration(
             color: color,
             borderRadius: BorderRadius.circular(isRounded ?? false ? 50 : 5)),
         child: Padding(
-          padding: const EdgeInsets.all(10),
+          padding: EdgeInsets.all(padding),
           child: Center(
             child: Text(text,
                 style: TextStyle(fontSize: fontSize, color: textColor)),
@@ -382,9 +412,7 @@ class FilterComponents {
           )),
           GlobalComponents.getColumnDistance(150),
           Row(
-            children: [
-
-            ],
+            children: [],
           ),
         ]));
   }

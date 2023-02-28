@@ -1,85 +1,84 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:project_party/styles/static_colors.dart';
 
+import '../components/components.dart';
 import '../models/models.dart';
 
-class PartyDetailScreen extends StatefulWidget {
+class PartyDetailScreen extends StatelessWidget {
   final Party party;
   PartyDetailScreen({required this.party});
-  @override
-  _PartyDetailScreenState createState() => _PartyDetailScreenState();
-}
-
-class _PartyDetailScreenState extends State<PartyDetailScreen> {
-  ScrollController _scrollController = ScrollController();
-  bool _showTitle = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(() {
-      setState(() {
-        _showTitle = _scrollController.offset > 50;
-      });
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
+    var id = party.partyId;
+    print(id);
     return Scaffold(
       body: CustomScrollView(
-        controller: _scrollController,
+        controller: ScrollController(),
         slivers: <Widget>[
           SliverAppBar(
             expandedHeight: MediaQuery.of(context).size.height * 0.5,
             flexibleSpace: FlexibleSpaceBar(
+              centerTitle: true,
               background: Image.network(
-                widget.party.pictureSource,
+                party.pictureSource,
                 fit: BoxFit.cover,
               ),
             ),
-            backgroundColor: StaticColors.secondary,
+            centerTitle: true,
+            backgroundColor: StaticColors.primary,
             elevation: 0,
             pinned: true,
-            title: _showTitle ? Text(widget.party.name) : null,
-          ),
-          SliverPersistentHeader(
-            delegate: _SliverAppBarDelegate(
-              minHeight: 50,
-              maxHeight: 50,
-              child: Container(
-                color: Colors.white,
-                child: Center(
-                  child: Text(widget.party.name),
-                ),
-              ),
-            ),
-            pinned: true,
+            foregroundColor: StaticColors.secondary,
+            title: Text(party.name, style: TextStyle(color: Colors.white)),
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(8.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    widget.party.name,
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  GlobalComponents.getColumnDistance(15),
+                  Text(party.locationName),
+                  _getItemSet(
+                      text: party.locationName,
+                      iconData: Icons.location_on,
+                      alignment: MainAxisAlignment.start,
+                      textStyle: TextStyle(fontWeight: FontWeight.bold)),
+                  _getItemSet(
+                      text: party.genres ?? "Keine Angabe",
+                      iconData: Icons.music_note,
+                      alignment: MainAxisAlignment.start,
+                      wholeLength: true),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _getItemSet(
+                          iconData: Icons.timer_outlined,
+                          text: DateFormat('HH:mm').format(party.time)),
+                      _getItemSet(
+                          iconData: Icons.attach_money,
+                          text: party.cost.toString() + "€"),
+                      _getItemSet(
+                          iconData: Icons.safety_check,
+                          text: party.minAge.toString()),
+                    ],
                   ),
-                  SizedBox(height: 1000),
-
-                  SizedBox(height: 8),
-                  Text(
-                    widget.party.description,
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    widget.party.locationName,
-                    style: TextStyle(fontSize: 16),
+                  Text("Beschreibung"),
+                  Text(party.description),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      GlobalComponents.getButton("Mehr Infos",
+                          color: StaticColors.primary,
+                          textColor: StaticColors.secondary,
+                          padding: 7),
+                      GlobalComponents.getButton("Route",
+                          color: StaticColors.primary,
+                          textColor: StaticColors.secondary,
+                          padding: 7),
+                    ],
                   ),
                 ],
               ),
@@ -89,6 +88,32 @@ class _PartyDetailScreenState extends State<PartyDetailScreen> {
       ),
     );
   }
+}
+
+Row _getItemSet(
+    {required String text,
+      required IconData iconData,
+      MainAxisAlignment alignment = MainAxisAlignment.center,
+      TextStyle? textStyle,
+      bool wholeLength = false}) {
+  return Row(
+      mainAxisAlignment: alignment,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(iconData),
+        wholeLength
+            ? Expanded(
+            child: Text(
+              text,
+              style: textStyle,
+              softWrap: true,
+            ))
+            : Text(
+          text,
+          style: textStyle,
+          softWrap: true,
+        )
+      ]);
 }
 
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
@@ -103,7 +128,8 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   });
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
     return SizedBox.expand(child: child);
   }
 
